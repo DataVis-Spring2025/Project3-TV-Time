@@ -53,7 +53,7 @@ window.onload = () => {
             updateLoadingMessage("Failed to load data.");
             setTimeout(() => hideLoading(), 1500);
         });
-
+        console.clear();
 };
 
 
@@ -245,6 +245,7 @@ console.log("Stats:", stats);
 const overlay = document.getElementById("overlay");
 const continueBtn = document.getElementById("continueBtn");
 const reopenPopupBtn = document.getElementById("reopenPopupBtn");
+const clearBtn = document.getElementById("clearbtn");
 
 function showPopup() {
     overlay.classList.remove("hidden");
@@ -255,3 +256,16 @@ function hidePopup() {
 
 continueBtn.addEventListener("click", hidePopup);
 reopenPopupBtn.addEventListener("click", showPopup);
+
+clearBtn.addEventListener("click", () => {
+    // Uncheck all checkboxes
+    document.querySelectorAll('input[data-character]').forEach(input => {
+        input.checked = false;
+    });
+
+    // Clear the selected characters set
+    selectedCharacters.clear();
+
+    // Reapply filters to update the visualizations
+    applyFilters();
+});

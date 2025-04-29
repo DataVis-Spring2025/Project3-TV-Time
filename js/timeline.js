@@ -11,10 +11,13 @@ export class Timeline {
     this.onSelectRange = onSelectRange;
 
     this.renderTimeline();
+
+    const clearBtn = document.getElementById('clearTimelineBtn');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', this.clearSelection.bind(this));
+    }
   }
   
-  
-
   generateEpisodes() {
     const episodesPerSeason = [26,18,11,7]; // manual input
     const episodes = [];
@@ -200,6 +203,29 @@ export class Timeline {
       .style("top", `${rectBox.top + window.scrollY - 30}px`)
       .text(hoverEpisode.label);
   
+  }
+
+  clearSelection() {
+    this.selectedRange = [];
+    this.startIndex = null;
+    this.endIndex = null;
+    this.dragging = false;
+  
+    const container = document.getElementById(this.containerId);
+    const svg = d3.select(container).select('svg');
+    const g = svg.select('g');
+  
+    g.selectAll('rect')
+      .data(this.episodeData, d => d.id)
+      .transition()
+      .duration(300)
+      .attr('fill', '#ccc');
+  
+    d3.select("#tooltip").style("opacity", 0);
+  
+    console.clear();
+    console.log("Selection cleared.");
+    this.onSelectRange(this.episodeData);
   }
 
   logSelectedRange() {

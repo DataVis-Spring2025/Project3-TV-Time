@@ -9,8 +9,8 @@ body {
 
 .bottom-right {
   position: fixed;
-  bottom: 65px;
-  right: 20px;
+  top: 40px;
+  right: 30px;
   cursor: pointer;
   z-index: 1000;
 }
@@ -311,4 +311,12 @@ body {
 table{
   color: #d6b479;
   border-color: #d6b479;
+}
+
+
+#timelineclrbtn button {
+  position: absolute;
+  bottom: 65px;
+  right: 25px;
+  z-index: 999;
 }

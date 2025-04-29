@@ -39,9 +39,10 @@ class CharMap {
     this.labelGroup = this.svg.append("g").attr("id", "label-group");
     this.initMap();
     this.drawPoints();
-    this.labelGroup.raise();
     this.drawLabels();
-
+    this.labelGroup.raise();
+    this.currentCharacters = [];
+    this.injectUIControls(); 
     this.csvCache = null; // for caching CSV
     this.characterData = {}; // Store the current character's elements (image, trails, etc.)
   }
@@ -53,6 +54,72 @@ class CharMap {
       .attr("viewBox", `0 0 ${this.width} ${this.height}`)
       .style("width", "100%")
       .style("height", "100%");
+  }
+
+  injectUIControls() {
+    // Select the parent element containing the SVG
+    const container = d3.select(this.svg.node().parentNode);
+  
+    // Insert a controls div before the SVG so that it appears at the top
+    const controlDiv = container
+      .insert("div", () => this.svg.node())
+      .attr("id", "map-controls")
+      .style("position", "relative")
+      .style("width", "100%")
+      .style("display", "flex")
+      .style("justify-content", "space-between")
+      .style("align-items", "center")
+      .style("margin-bottom", "5px");
+  
+    // ---- Info Icon & Tooltip on the left ----
+    const infoContainer = controlDiv.append("div")
+      .attr("id", "infoIcon")
+      .style("margin-left", "10px")
+      .style("position", "relative");
+  
+    const info = infoContainer.append("i")
+      .attr("class", "bi bi-info-circle-fill")
+      .style("color", "#666")
+      .style("cursor", "help");
+  
+    const infoTooltip = infoContainer.append("div")
+      .attr("id", "infoTooltip")
+      .style("position", "absolute")
+      .style("background", "#fff")
+      .style("border", "1px solid #ccc")
+      .style("padding", "10px")
+      .style("border-radius", "5px")
+      .style("box-shadow", "0 0 5px rgba(0,0,0,0.2)")
+      .style("width", "450px")
+      .style("font-size", "12px")
+      .style("display", "none")
+      .style("z-index", "1000")
+      .style("text-align", "justify");
+  
+    const trieInfo = "The character locations on the map are based on the script and may not be exact for every character.<br>Characters appearing only at the Infinity Castle or eventually ending up there is intentional and serves as an Easter egg referencing a key event that occurs at the end of the series.";
+  
+    info.on("mouseover", function(event) {
+        infoTooltip.html(trieInfo)
+            .style("display", "block")
+            .style("left", `${event.offsetX + 10}px`)
+            .style("top", `${event.offsetY + 10}px`);
+      })
+      .on("mousemove", function(event) {
+        infoTooltip
+            .style("left", `${event.offsetX + 10}px`)
+            .style("top", `${event.offsetY + 10}px`);
+      })
+      .on("mouseout", function() {
+        infoTooltip.style("display", "none");
+      });
+  
+    // ---- Replay Button on the right ----
+    controlDiv.append("button")
+      .attr("id", "replayBtn")
+      .attr("class", "btn btn-primary")
+      .style("margin-right", "10px")
+      .text("Replay")
+      .on("click", () => this.replayAnimation());
   }
 
   drawPoints() {
@@ -92,6 +159,12 @@ class CharMap {
       .each(function () {
         d3.select(this).raise(); // move each label to top
       });
+  }
+
+  replayAnimation() {
+    if (this.currentCharacters && this.currentCharacters.length > 0) {
+      this.moveCharacters(this.currentCharacters);
+    }
   }
 
   moveCharacters(characterNames) {
@@ -226,7 +299,7 @@ class CharMap {
         self.characterData[nameLower] = { image: img, trail: visitedPoints };
       });
     };
-  
+    this.currentCharacters = characterNames;
     if (self.csvCache) {
       process(self.csvCache);
     } else {
