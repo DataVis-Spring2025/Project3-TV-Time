@@ -13,6 +13,11 @@ let filteredData = [];
 let selectedCharacters = new Set();
 let charMapInstance = null;
 let characterStats = null;
+const music = new Audio('infinity_castle_1_hour_loop_full_best_soundtrack__run_like_hashira__kimetsu_no_yaiba_-demon_slayer (1).mp3');
+music.loop = true;
+music.volume = 0.5;
+music.muted=true;
+let isMuted = true;
 
 window.onload = () => {
     showPopup();
@@ -254,7 +259,12 @@ function hidePopup() {
     overlay.classList.add("hidden");
 }
 
-continueBtn.addEventListener("click", hidePopup);
+continueBtn.addEventListener("click", () => {
+    hidePopup();
+    if (music.paused) {
+        music.play().catch(err => console.warn("Autoplay blocked:", err));
+    }
+});
 reopenPopupBtn.addEventListener("click", showPopup);
 
 clearBtn.addEventListener("click", () => {
@@ -268,4 +278,26 @@ clearBtn.addEventListener("click", () => {
 
     // Reapply filters to update the visualizations
     applyFilters();
+
+     // Change path if needed
 });
+
+    const toggleMusicBtn = document.getElementById('toggleMusic');
+    const speakerIcon = document.getElementById('speakerIcon');
+
+    const volumeUpIcon = `
+      <path d="M11.536 14.01A8.47 8.47 0 0 0 14.026 8a8.47 8.47 0 0 0-2.49-6.01l-.708.707A7.48 7.48 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303z"/>
+      <path d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.48 5.48 0 0 1 11.025 8a5.48 5.48 0 0 1-1.61 3.89z"/>
+      <path d="M8.707 11.182A4.5 4.5 0 0 0 10.025 8a4.5 4.5 0 0 0-1.318-3.182L8 5.525A3.5 3.5 0 0 1 9.025 8 3.5 3.5 0 0 1 8 10.475zM6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06"/>
+    `;
+
+    const muteIcon = `
+      <path d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06m7.137 2.096a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0"/>
+    `;
+
+    toggleMusicBtn.addEventListener("click", () => {
+      isMuted = !isMuted;
+      music.muted = isMuted;
+      speakerIcon.innerHTML = isMuted ? muteIcon : volumeUpIcon;
+      console.log("Muted:", music.muted, "Paused:", music.paused);
+    });

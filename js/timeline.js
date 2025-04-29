@@ -65,6 +65,7 @@ export class Timeline {
       .attr('transform', 'translate(0, 10)');
 
     // Tooltip
+
     const tooltip = d3.select("#tooltip");
     const episodeBoxes = g.selectAll('rect')
       .data(this.episodeData)
@@ -84,9 +85,19 @@ export class Timeline {
         this.dragSelection(d.id);
         tooltip
           .style('opacity', 1)
-          .style('left', `${event.pageX + 10}px`)
-          .style('top', `${event.pageY - 20}px`)
           .text(d.label);
+
+  const offsetX = d.season === 4 ? -40 : 10;
+
+  tooltip
+    .style('left', `${event.pageX + offsetX}px`)
+    .style('top', `${event.pageY - 20}px`);
+
+  d3.select(event.currentTarget)
+    .transition()
+    .duration(150)
+    .attr('height', 40)
+    .attr('y', -5);
 
         d3.select(event.currentTarget)
           .transition()
@@ -95,13 +106,15 @@ export class Timeline {
           .attr('y', -5);
       })
       .on('mousemove', (event) => {
+        const offsetX = d.season === 4 ? -40 : 10;
         tooltip
-          .style('left', `${event.pageX + 10}px`)
+        .style('left', `${event.pageX + offsetX}px`)
           .style('top', `${event.pageY - 20}px`);
       })
       .on('mousehover', (event) => {
+        const offsetX = d.season === 4 ? -40 : 10;
         tooltip
-          .style('left', `${event.pageX + 10}px`)
+        .style('left', `${event.pageX + offsetX}px`)
           .style('top', `${event.pageY - 20}px`);
       })
       .on('mouseleave', (event) => {
@@ -188,7 +201,7 @@ export class Timeline {
       exit => exit
     ).on('mousehover', (event) => {
       tooltip
-        .style('left', `${event.pageX + 10}px`)
+      .style('left', `${event.pageX + leftOffset}px`)
         .style('top', `${event.pageY - 20}px`);
     }); 
     const tooltip = d3.select("#tooltip");

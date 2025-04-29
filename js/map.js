@@ -118,7 +118,7 @@ class CharMap {
       .attr("id", "replayBtn")
       .attr("class", "btn btn-primary")
       .style("margin-right", "10px")
-      .text("Replay")
+      .text("Replay Animation")
       .on("click", () => this.replayAnimation());
   }
 
